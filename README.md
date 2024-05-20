@@ -70,3 +70,5 @@ These three dicts are used to control hyperparameters of the experiment.
 ### Results
 Please see [results.ipynb](./results.ipynb) notebook to reproduce and browse results of the experiments.
 
+### Additional Information
+The directory "d_gril_fixed_centers" contains the code to run D-GRIL with centers fixed. The instructions to run that version is exactly the same as the ones given above.
