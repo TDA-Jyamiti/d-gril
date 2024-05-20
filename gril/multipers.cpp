@@ -580,7 +580,7 @@ void Multipers::set_grid_resolution_and_lower_left_corner(const Tensor& filtrati
 
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
     py::class_<Multipers>(m, "Multipers")
-        .def(py::init<int, int, double, int, bool, int, std::vector<int>>())
+        .def(py::init<int, int, double, int, std::vector<int>>())
         .def("compute_landscape", &Multipers::compute_landscape)
         .def("set_hom_rank", &Multipers::set_hom_rank)
         .def("refresh_rank_info", &Multipers::refresh_rank_info)

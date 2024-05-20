@@ -65,7 +65,7 @@ __model_cfg_meta = {
     'num_struct_elements': int,
     'cls_hidden_dimension': int,
     'drop_out': float,
-    'num_center_pts': int
+    'num_center_pts': int,
 }
 
 
@@ -542,7 +542,7 @@ def restart_experiment(exp_cfg, device, output_dir=None, verbose=True, output_ca
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--model', type=str, default='GIN_MPML', choices=['GIN', 'GCN', 'GAT', 'SimpleNNBaseline', 'GIN_MPML', 'GCN_MPML', 'GAT_MPML'])
-    parser.add_argument('--dataset', type=str, default='IMDB-BINARY')
+    parser.add_argument('--dataset', type=str, default='MUTAG')
     parser.add_argument('--fp', default=None, choices=['maccs', 'ecfp', 'morgan2', 'morgan3'])
     parser.add_argument('--num_folds', type=int, default=5)
     parser.add_argument('--num_center_pts', type=int, default=25)
@@ -577,7 +577,7 @@ if __name__ == '__main__':
         'drop_out': 0.1,
         'ls_dim': 5000,
         'concat_fp': args.fp,
-        'num_center_pts': args.num_center_pts
+        'num_center_pts': args.num_center_pts,
         }
 
 

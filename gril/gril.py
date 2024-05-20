@@ -35,7 +35,7 @@ __cuda_src_files = glob(__cuda_src_dir + '/*.cu')
 
 
 class MultiPers:
-    def __init__(self, hom_rank: int, l: int, res: float, step: int, adaptive: bool, num_centers: int, ranks: List[int]):
+    def __init__(self, hom_rank: int, l: int, res: float, num_centers: int, ranks: List[int]):
         # try:
         #     __M = load(
         #         'zigzag',
@@ -46,7 +46,7 @@ class MultiPers:
         # except Exception as ex:
         #     print("Error was {}".format(ex))
         # const int hom_rank, const int l, double res, int step, const std::vector<int> ranks
-        self.mpl = mpml.Multipers(hom_rank, l, res, step, adaptive, num_centers, ranks)
+        self.mpl = mpml.Multipers(hom_rank, l, res, num_centers, ranks)
     
     
     def compute_landscape(self, pts: List[Tuple[int]], batch: List[Tuple[Tensor, List[List[int]]]]):

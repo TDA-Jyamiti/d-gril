@@ -80,22 +80,15 @@ class Multipers{
     
     public:
         int max_threads;
-        Multipers(const int hom_rank, const int l, double res, int step, bool adaptive, int num_centers, const std::vector<int> ranks){
+        Multipers(const int hom_rank, const int l, double res, int num_centers, const std::vector<int> ranks){
             set_hom_rank(hom_rank);
             set_l_for_worm(l);
             // set_division_along_axes(px, py);
-            set_step(step);
+            // set_step(step);
             set_res(res);
             set_ranks(ranks);
             this->max_threads = 1;
-            if(adaptive){
-                this->num_points_guess = num_centers;
-            }
-            else{
-                int num_cp = (int)(1.0 / res);
-                int num_div = num_cp / step;
-                this->num_points_guess = (num_div * num_div);
-            }
+            this->num_points_guess = num_centers;
             for(auto i = 0; i < num_points_guess; i++){
                 this->rank_info_h0.push_back(new std::map<int, int>());
                 this->rank_info_h1.push_back(new std::map<int, int>());

@@ -627,6 +627,7 @@ class GCN_MPML_Learned(nn.Module):
         use_node_features: bool = None,
         pooling_strategy: str=None,
         concat_fp: str = None,
+        num_center_pts: int = None,
         **kwargs,  
     ):
         super().__init__()
@@ -654,6 +655,9 @@ class GCN_MPML_Learned(nn.Module):
                 raise Exception("If using input features input_feature_dim must be set")
             self.embed_deg = None
 
+
+        self.num_center_pts = num_center_pts
+        
         self.use_node_features = use_node_features
         
         self.embed_lab = OneHotEmbedding(num_node_lab) if use_node_label else None
@@ -687,18 +691,15 @@ class GCN_MPML_Learned(nn.Module):
             nn.Sigmoid()
         )
         
-        self.sample_pts = nn.Parameter(torch.tensor(np.random.randint(0,100,size=(25,2)) * 0.01, dtype=torch.float, requires_grad=True))
+        self.sample_pts = nn.Parameter(torch.tensor(np.random.randint(0,100,size=(self.num_center_pts,2)) * 0.01, dtype=torch.float, requires_grad=True))
         # self.lin_h = nn.Linear(gin_dimension, 2)
-        self.mpml_0 = MultiPersDiff(res=0.01, hom_rank=0, num_center_pts=25, step=20, l=2)
+        self.mpml_0 = MultiPersDiff(res=0.01, hom_rank=0, num_center_pts=self.num_center_pts, l=2)
         # self.mpml_0 = MultiPersDiffOld(res=0.01, hom_rank=0, step=25, l=2)
         # self.mpml_1 = MultiPersDiff(res=0.01, hom_rank=1, step=10, l=2)
         
-        # num_centre_pts = int(1 / (10 * 0.01))
-        # num_centre_pts = num_centre_pts * num_centre_pts
-        num_centre_pts = 25
 
-        self.lin_h0 = nn.Linear(num_centre_pts, cls_hidden_dimension)
-        self.lin_h1 = nn.Linear(num_centre_pts, cls_hidden_dimension)
+        self.lin_h0 = nn.Linear(self.num_centre_pts, cls_hidden_dimension)
+        self.lin_h1 = nn.Linear(self.num_centre_pts, cls_hidden_dimension)
         cls_in_dim = 2 * cls_hidden_dimension
         self.concat_fp = concat_fp
         if self.concat_fp == 'maccs':
@@ -898,6 +899,7 @@ class GAT_MPML_Learned(nn.Module):
         use_node_features: bool = None,
         pooling_strategy: str=None,
         concat_fp: str = None,
+        num_center_pts: int = None,
         **kwargs,  
     ):
         super().__init__()
@@ -925,6 +927,8 @@ class GAT_MPML_Learned(nn.Module):
                 raise Exception("If using input features input_feature_dim must be set")
             self.embed_deg = None
 
+        self.num_center_pts = num_center_pts
+        
         self.use_node_features = use_node_features
         
         self.embed_lab = OneHotEmbedding(num_node_lab) if use_node_label else None
@@ -961,18 +965,15 @@ class GAT_MPML_Learned(nn.Module):
             nn.Sigmoid()
         )
         
-        self.sample_pts = nn.Parameter(torch.tensor(np.random.randint(0,100,size=(25,2)) * 0.01, dtype=torch.float, requires_grad=True))
+        self.sample_pts = nn.Parameter(torch.tensor(np.random.randint(0,100,size=(self.num_center_pts,2)) * 0.01, dtype=torch.float, requires_grad=True))
         # self.lin_h = nn.Linear(gin_dimension, 2)
-        self.mpml_0 = MultiPersDiff(res=0.01, hom_rank=0, num_center_pts=25, step=20, l=2)
+        self.mpml_0 = MultiPersDiff(res=0.01, hom_rank=0, num_center_pts=self.num_center_pts, l=2)
         # self.mpml_0 = MultiPersDiffOld(res=0.01, hom_rank=0, step=25, l=2)
         # self.mpml_1 = MultiPersDiff(res=0.01, hom_rank=1, step=10, l=2)
-        
-        # num_centre_pts = int(1 / (10 * 0.01))
-        # num_centre_pts = num_centre_pts * num_centre_pts
-        num_centre_pts = 25
+    
 
-        self.lin_h0 = nn.Linear(num_centre_pts, cls_hidden_dimension)
-        self.lin_h1 = nn.Linear(num_centre_pts, cls_hidden_dimension)
+        self.lin_h0 = nn.Linear(self.num_centre_pts, cls_hidden_dimension)
+        self.lin_h1 = nn.Linear(self.num_centre_pts, cls_hidden_dimension)
         cls_in_dim = 2 * cls_hidden_dimension
         self.concat_fp = concat_fp
         if self.concat_fp == 'maccs':
@@ -1344,13 +1345,10 @@ class GIN_MPML_Learned(nn.Module):
         self.num_center_pts = num_center_pts
         self.sample_pts = nn.Parameter(torch.tensor(np.random.randint(0,100,size=(self.num_center_pts,2)) * 0.01, dtype=torch.float, requires_grad=True))
         # self.lin_h = nn.Linear(gin_dimension, 2)
-        self.mpml_0 = MultiPersDiff(res=0.01, hom_rank=0, num_center_pts=self.num_center_pts, step=20, l=2)
+        self.mpml_0 = MultiPersDiff(res=0.01, hom_rank=0, num_center_pts=self.num_center_pts, l=2)
         # self.mpml_0 = MultiPersDiffOld(res=0.01, hom_rank=0, step=25, l=2)
         # self.mpml_1 = MultiPersDiff(res=0.01, hom_rank=1, step=10, l=2)
-        
-        # num_centre_pts = int(1 / (10 * 0.01))
-        # num_centre_pts = num_centre_pts * num_centre_pts
-        # num_centre_pts = 25
+            
         
 
         self.lin_h0 = nn.Linear(self.num_center_pts, cls_hidden_dimension)
@@ -1435,7 +1433,6 @@ def get_row_col(num_pts, num_simplices, num_lines, id_tensor: torch.Tensor):
 class moveSimplices(Function):
     """
     @staticmethod
-    THIS ONE IS SLOWER. I KNOW RIGHT?
     
     def forward(ctx, filtration, bars, sample_pts):
         # Vectorized version of movesimplices
@@ -1606,7 +1603,7 @@ class moveSimplices(Function):
 
         return grad, None, grad_center_pts
 
-class MultiPersDiffFixecCenters(nn.Module):
+class MultiPersDiffFixedCenters(nn.Module):
     def __init__(self, res, hom_rank, num_center_pts=None, step=10, l=2, adaptive=False):
         super().__init__()
         self.res = res
@@ -1659,7 +1656,7 @@ class MultiPersDiffFixecCenters(nn.Module):
         return lambdas_h0, lambdas_h1
     
 class MultiPersDiff(nn.Module):
-    def __init__(self, res, hom_rank, num_center_pts=16, step=20, l=2, adaptive=True):
+    def __init__(self, res, hom_rank, num_center_pts=16, l=2):
         super().__init__()
         self.res = res
         self.num_center_pts = num_center_pts
@@ -1668,7 +1665,7 @@ class MultiPersDiff(nn.Module):
         self.sample_pts = self.sample_grid()
         self.hom_rank = hom_rank
         self.filt_layer = compute_lub
-        self.mpl = gril.MultiPers(hom_rank=hom_rank, l=l, res=res, step=step, adaptive=adaptive, num_centers=num_center_pts, ranks=list(range(1, 4)))
+        self.mpl = gril.MultiPers(hom_rank=hom_rank, l=l, res=res, num_centers=num_center_pts, ranks=list(range(1, 4)))
         self.mpl.set_max_jobs(40)
         self.sigmoid = nn.Sigmoid()
 
