@@ -72,16 +72,3 @@ Please see [results.ipynb](./results.ipynb) notebook to reproduce and browse res
 
 ### Additional Information
 The directory "d_gril_fixed_centers" contains the code to run D-GRIL with centers fixed. The instructions to run that version is exactly the same as the ones given above.
-
-### Citation
-```
-@article{mukherjee2024dgrilendtoendtopologicallearning,
-      title={D-GRIL: End-to-End Topological Learning with 2-parameter Persistence}, 
-      author={Soham Mukherjee and Shreyas N. Samaga and Cheng Xin and Steve Oudot and Tamal K. Dey},
-      year={2024},
-      eprint={2406.07100},
-      archivePrefix={arXiv},
-      primaryClass={cs.LG},
-      url={https://arxiv.org/abs/2406.07100}, 
-}
-```
